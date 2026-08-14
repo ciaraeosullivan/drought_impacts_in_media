@@ -1,0 +1,31 @@
+# ---------------------------------------------------------------------------
+# Drought impact extraction pipeline — Python packages
+#
+# Install everything with:
+#     pip install -r requirements.txt
+#
+# Then download the spaCy model for each language you process:
+#     python -m spacy download de_core_news_lg
+#     python -m spacy download fr_core_news_lg
+#     python -m spacy download it_core_news_lg
+#
+# Python 3.10 or 3.11 is recommended.
+# ---------------------------------------------------------------------------
+
+pandas>=2.0
+numpy>=1.24
+scikit-learn>=1.3
+scipy>=1.10
+joblib>=1.3
+tqdm>=4.65
+
+datasketch>=1.6                 # near-duplicate article detection
+spacy>=3.7                      # sentence splitting
+geoparser==0.2.3                # place-name recognition (pin this version)
+sentence-transformers>=2.2      # multilingual sentence embeddings
+iterative-stratification>=0.1.7 # balanced multi-label data splits
+lxml>=4.9                       # TEI export (Appendix A)
+
+# Optional: only needed for the canton-level location check
+geopandas>=0.14
+shapely>=2.0
