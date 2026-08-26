@@ -20,7 +20,7 @@ my_project/
 ├── requirements.txt
 │
 ├── input/
-│   └── DE_articles.tsv          REQUIRED — your articles
+│   └── DE_articles.tsv          REQUIRED — news articles
 │
 ├── annotation/
 │   ├── DE_annotated_impacts_locations.csv   REQUIRED — span annotations
@@ -47,23 +47,22 @@ the rest are created empty if absent.
 
 Block 1 has a `MODE` switch:
 
-- **`MODE = "train"`** — learn the models from a corpus you annotated (e.g. 1990–2024),
-  then save them to `output/models/`. Do this once. Point `INPUT_FILE` at the file your
+- **`MODE = "train"`** — learn the models from an annotated corpus (e.g. 1990–2024),
+  then save them to `output/models/`. This needs to be done once. Point `INPUT_FILE` at the file the
   annotations were made from.
 - **`MODE = "apply"`** — run the saved models on new, un-annotated articles (e.g. 2025+).
   No annotations needed. Point `INPUT_FILE` at the new file.
 
 The training-only blocks (4, 5a, 7a, 8a, 9) skip themselves automatically in apply mode,
-so you can still run every cell top to bottom.
+so every cell can still be run top to bottom.
 
-**Typical use:** run once in `"train"` mode on your historical corpus, then switch to
-`"apply"` and run again for each new year of articles. You never re-process the old
-articles.
+**Typical use:** run once in `"train"` mode on historical corpus, then switch to
+`"apply"` and run again for each new year of articles.
 
 ## Running it
 
-Open the notebook and run the cells from top to bottom. Only **Block 1** needs editing —
-usually `MODE`, `LANGUAGE` and `INPUT_FILE`.
+Open the notebook and run the cells from top to bottom. Only **Block 1** needs editing 
+(`MODE`, `LANGUAGE` and `INPUT_FILE`).
 
 Every block saves its result, so you can stop after any block and continue later: re-run
 Block 1 and Block 2 first, then carry on. The two geoparsing blocks resume automatically
@@ -75,31 +74,12 @@ To process several languages, run the whole notebook once per language, changing
 ## Adding more annotated data
 
 1. Run **Appendix A** to export a fresh sample of un-annotated articles as TEI files.
-2. Annotate them in your annotation tool.
+2. Annotate them in an annotation tool.
 3. Save the CSV export into `annotation/` with a name matching
    `{LANG}_annotated_impacts*.csv`, e.g. `DE_annotated_impacts_round3.csv`.
 4. Re-run Block 4 onwards. All matching files are found and merged automatically, and
    rows appearing in several files are de-duplicated.
 
-## Impact classifier: per-language training
-
-The impact classifier (Block 8) is trained differently per language, all controlled from
-`LANGUAGE_SETTINGS` in Block 1:
-
-- **DE, FR** — the annotated articles are split into train / validation / test
-  (`file_stratified`), and machine-translated ("synthetic") sentences from the other
-  language are optionally added to the training set.
-- **IT** — trained **entirely on synthetic data** (`no_real_train`). The real Italian
-  data is used only for validation (threshold tuning) and test (scoring). Italian
-  therefore *requires* its synthetic files to be present.
-
-Synthetic files live in `SYNTHETIC_DIR` (default `classification/`) and are plain CSVs
-with columns `sentence_raw, labels, file, sentence_relative_position`. Which files each
-language uses is set by `impact_synthetic_files` in `LANGUAGE_SETTINGS`. Turn the whole
-mechanism off with `USE_SYNTHETIC = False` (not possible for IT, which has no real
-training data).
-
-In **apply** mode the synthetic files are not needed — only the saved model is used.
 
 ## Main outputs
 
@@ -109,7 +89,7 @@ In **apply** mode the synthetic files are not needed — only the saved model is
 | `{LANG}_09_impact_predictions.csv` | One row per impact sentence, with impact types and confidences |
 | `{LANG}_11_location_clusters.csv` | One row per main location per article, with coordinates and canton |
 
-Join the last two on `file` to get impacts with places.
+Join the last two on `file` to get impacts with locations.
 
 ## Turning geoparsing off
 
